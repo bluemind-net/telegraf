@@ -637,7 +637,7 @@ def package(build_output, pkg_name, version, nightly=False, iteration=1, static=
                             package_version, suffix = package_version.split('~', 1)
                             # The ~ indicatees that this is a prerelease so we give it a leading 0.
                             package_iteration = "0.%s" % suffix
-                        fpm_command = "fpm {} --name {} -a {} -t {} --version {} --iteration {} -C {} -p {} ".format(
+                        fpm_command = "fpm {} --name {} -a {} -t {} --version {} --replaces telegraf --iteration {} -C {} -p {} ".format(
                             fpm_common_args,
                             name,
                             package_arch,
