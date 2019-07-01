@@ -2,6 +2,7 @@
 Description=The plugin-driven server agent for reporting metrics into InfluxDB
 Documentation=https://github.com/influxdata/telegraf
 After=network.target
+StartLimitIntervalSec=0
 
 [Service]
 EnvironmentFile=-/etc/default/telegraf
