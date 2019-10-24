@@ -55,6 +55,20 @@ fi
 
 OPEN_FILE_LIMIT=65536
 
+function getTelegrafProcessPids() {
+    ppid=$(pidof ${daemon})
+
+    kill -0 ${ppid} > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        unset ppid
+        rm -f $pidfile > /dev/null 2>&1
+    fi
+
+    if [ "${ppid}" != "" ]; then
+        telegrafPids=$(pgrep -P ${ppid})" "${ppid}
+    fi
+}
+
 function pidofproc() {
     if [ $# -ne 3 ]; then
         echo "Expected three arguments, e.g. $0 -p pidfile daemon-name"
@@ -119,13 +133,9 @@ confdir=/etc/telegraf/telegraf.d
 
 case $1 in
     start)
-        # Checked the PID file exists and check the actual status of process
-        if [ -e "$pidfile" ]; then
-            if pidofproc -p $pidfile $daemon > /dev/null; then
-                log_failure_msg "$name process is running"
-	    else
-                log_failure_msg "$name pidfile has no corresponding process; ensure $name is stopped and remove $pidfile"
-            fi
+	getTelegrafProcessPids
+        if [ "${telegrafPids}" != "" ]; then
+            log_failure_msg "$name process is running"
             exit 0
         fi
 
@@ -149,20 +159,25 @@ case $1 in
 
     stop)
         # Stop the daemon.
-        if [ -e $pidfile ]; then
-            if pidofproc -p $pidfile $daemon > /dev/null; then
-                # periodically signal until process exists
-                while true; do
-                        if ! pidofproc -p $pidfile $daemon > /dev/null; then
-                                break
-                        fi
-                        killproc -p $pidfile SIGTERM 2>&1 >/dev/null
-                        sleep 2
-                done
+        getTelegrafProcessPids
+        if [ "${telegrafPids}" != "" ]; then
+            kill -TERM ${telegrafPids}
 
-                log_success_msg "$name process was stopped"
-                rm -f $pidfile
+            maxRetry=10
+            count=0
+            while kill -0 ${telegrafPids} > /dev/null 2>&1 \
+                && [ ${count} -lt ${maxRetry} ]; do
+                let count=count+1
+                sleep 1
+            done
+            
+            if [ ${count} -ge ${maxRetry} ]; then
+                # some processes are still running, try harder
+                kill -9 ${telegrafPids} > /dev/null 2>&1
             fi
+
+            rm -f ${pidfile}
+            log_success_msg "$name process was stopped"
         else
             log_failure_msg "$name process is not running"
         fi
@@ -171,7 +186,8 @@ case $1 in
     reload)
         # Reload the daemon.
         if [ -e $pidfile ]; then
-            if pidofproc -p $pidfile $daemon > /dev/null; then
+            pidofproc -p $pidfile $daemon > /dev/null 2>&1 && status="0" || status="$?"
+            if [ "$status" = 0 ]; then
                 if killproc -p $pidfile SIGHUP; then
                     log_success_msg "$name process was reloaded"
                 else
