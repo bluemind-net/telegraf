@@ -5,6 +5,7 @@ After=network.target
 StartLimitIntervalSec=0
 
 [Service]
+StartLimitBurst=15
 EnvironmentFile=-/etc/default/telegraf
 User=telegraf
 ExecStart=/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
