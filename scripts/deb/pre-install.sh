@@ -8,6 +8,10 @@ if ! id telegraf &>/dev/null; then
     useradd -r -M telegraf -s /bin/false -d /etc/telegraf -g telegraf
 fi
 
+if grep "^bluemind:" /etc/group &>/dev/null; then
+    usermod -a -G bluemind telegraf
+fi
+
 if [[ -d /etc/opt/telegraf ]]; then
     # Legacy configuration found
     if [[ ! -d /etc/telegraf ]]; then
