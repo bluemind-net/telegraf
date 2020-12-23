@@ -270,10 +270,11 @@ $(rpms):
 		--depends coreutils \
 		--depends shadow-utils \
 		--rpm-posttrans scripts/rpm/post-install.sh \
-		--name telegraf \
+		--name bm-telegraf \
 		--version $(version) \
+		--replaces telegraf \
 		--iteration $(rpm_iteration) \
-        --chdir $(DESTDIR) \
+		--chdir $(DESTDIR) \
 		--package $(pkgdir)/$@
 
 deb_amd64 := amd64
@@ -307,8 +308,9 @@ $(debs):
 		--after-remove scripts/deb/post-remove.sh \
 		--before-remove scripts/deb/pre-remove.sh \
 		--description "Plugin-driven server agent for reporting metrics into InfluxDB." \
-		--name telegraf \
+		--name bm-telegraf \
 		--version $(version) \
+		--replaces telegraf \
 		--iteration $(deb_iteration) \
 		--chdir $(DESTDIR) \
 		--package $(pkgdir)/$@
