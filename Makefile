@@ -368,6 +368,7 @@ $(include_packages):
 			--rpm-os ${GOOS} \
 			--name telegraf \
 			--version $(version) \
+			--replaces telegraf \
 			--iteration $(rpm_iteration) \
 			--chdir $(DESTDIR) \
 			--package $(pkgdir)/telegraf-$(rpm_version).$@ ;\
@@ -390,6 +391,7 @@ $(include_packages):
 			--description "Plugin-driven server agent for reporting metrics into InfluxDB." \
 			--name telegraf \
 			--version $(version) \
+			--replaces telegraf \
 			--iteration $(deb_iteration) \
 			--chdir $(DESTDIR) \
 			--package $(pkgdir)/telegraf_$(deb_version)_$@	;\
