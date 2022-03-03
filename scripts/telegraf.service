@@ -1,8 +1,9 @@
 [Unit]
 Description=The plugin-driven server agent for reporting metrics into InfluxDB
 Documentation=https://github.com/influxdata/telegraf
-After=network.target
 StartLimitIntervalSec=0
+After=network.target
+PartOf=bluemind.target
 
 [Service]
 StartLimitBurst=15
@@ -15,4 +16,4 @@ RestartForceExitStatus=SIGPIPE
 KillMode=control-group
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=bluemind.target

@@ -13,9 +13,9 @@ ifdef NIGHTLY
 	tar_version := nightly
 else ifeq ($(tag),)
 	version := $(next_version)
-	rpm_version := $(version)~$(commit)-0
+	rpm_version := $(version)
 	rpm_iteration := 0
-	deb_version := $(version)~$(commit)-0
+	deb_version := $(version)
 	deb_iteration := 0
 	tar_version := $(version)~$(commit)
 else ifneq ($(findstring -rc,$(tag)),)
@@ -273,7 +273,6 @@ $(rpms):
 		--name bm-telegraf \
 		--version $(version) \
 		--replaces telegraf \
-		--iteration $(rpm_iteration) \
 		--chdir $(DESTDIR) \
 		--package $(pkgdir)/$@
 
@@ -311,7 +310,6 @@ $(debs):
 		--name bm-telegraf \
 		--version $(version) \
 		--replaces telegraf \
-		--iteration $(deb_iteration) \
 		--chdir $(DESTDIR) \
 		--package $(pkgdir)/$@
 
