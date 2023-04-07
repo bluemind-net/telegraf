@@ -3,16 +3,18 @@ Description=Telegraf
 Documentation=https://github.com/influxdata/telegraf
 After=network-online.target
 Wants=network-online.target
+StartLimitInterval=0
+StartLimitBurst=0
 
 [Service]
 Type=notify
 EnvironmentFile=-/etc/default/telegraf
-ConditionFileExists=/etc/bm/mcast.id
+ConditionPathExists=/etc/bm/mcast.id
 User=telegraf
 ExecStart=/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
-Restart=always
-TimeoutSec=60s
+Restart=on-failure
+RestartSec=60
 RestartForceExitStatus=SIGPIPE
 KillMode=control-group
 LimitMEMLOCK=8M:8M
