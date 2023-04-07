@@ -366,7 +366,7 @@ $(include_packages):
 			--rpm-digest sha256 \
 			--rpm-posttrans scripts/rpm/post-install.sh \
 			--rpm-os ${GOOS} \
-			--name telegraf \
+			--name bm-telegraf \
 			--version $(version) \
 			--replaces telegraf \
 			--iteration $(rpm_iteration) \
@@ -389,7 +389,7 @@ $(include_packages):
 			--after-remove scripts/deb/post-remove.sh \
 			--before-remove scripts/deb/pre-remove.sh \
 			--description "Plugin-driven server agent for reporting metrics into InfluxDB." \
-			--name telegraf \
+			--name bm-telegraf \
 			--version $(version) \
 			--replaces telegraf \
 			--iteration $(deb_iteration) \
