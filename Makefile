@@ -12,16 +12,16 @@ commit := $(shell git rev-parse --short=8 HEAD)
 ifdef NIGHTLY
 	version := $(next_version)
 	rpm_version := nightly
-	rpm_iteration := 0
+	rpm_iteration := ${BUILD_ITERATION}
 	deb_version := nightly
-	deb_iteration := 0
+	deb_iteration := ${BUILD_ITERATION}
 	tar_version := nightly
 else ifeq ($(tag),)
 	version := $(next_version)
-	rpm_version := $(version)~$(commit)-0
-	rpm_iteration := 0
-	deb_version := $(version)~$(commit)-0
-	deb_iteration := 0
+	rpm_version := $(version)~$(commit)-${BUILD_ITERATION}
+	rpm_iteration := ${BUILD_ITERATION}
+	deb_version := $(version)~$(commit)-${BUILD_ITERATION}
+	deb_iteration := ${BUILD_ITERATION}
 	tar_version := $(version)~$(commit)
 else ifneq ($(findstring -rc,$(tag)),)
 	version := $(word 1,$(subst -, ,$(tag)))
@@ -333,7 +333,12 @@ darwin-arm64:
 include_packages := $(mips) $(mipsel) $(arm64) $(amd64) $(armel) $(armhf) $(riscv64) $(s390x) $(ppc64le) $(i386) $(windows) $(darwin-amd64) $(darwin-arm64)
 
 .PHONY: package
-package: docs config $(include_packages)
+package: check-env docs config $(include_packages)
+check-env:
+ifndef BUILD_ITERATION
+	$(error BUILD_ITERATION is undefined)
+endif
+
 
 .PHONY: $(include_packages)
 $(include_packages):
