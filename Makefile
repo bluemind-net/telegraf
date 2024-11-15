@@ -373,6 +373,7 @@ $(include_packages):
 			--rpm-os ${GOOS} \
 			--name bm-telegraf \
 			--version $(version) \
+			--epoch 1 \
 			--replaces telegraf \
 			--iteration $(rpm_iteration) \
 			--chdir $(DESTDIR) \
@@ -396,6 +397,7 @@ $(include_packages):
 			--description "Plugin-driven server agent for reporting metrics into InfluxDB." \
 			--name bm-telegraf \
 			--version $(version) \
+			--epoch 1 \
 			--replaces telegraf \
 			--iteration $(deb_iteration) \
 			--chdir $(DESTDIR) \
