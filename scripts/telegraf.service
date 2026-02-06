@@ -1,5 +1,6 @@
 [Unit]
 Description=Telegraf
+ConditionPathExists=/etc/bm/mcast.id
 Documentation=https://github.com/influxdata/telegraf
 After=network-online.target
 Wants=network-online.target
@@ -9,7 +10,6 @@ StartLimitBurst=0
 [Service]
 Type=notify
 EnvironmentFile=-/etc/default/telegraf
-ConditionPathExists=/etc/bm/mcast.id
 User=telegraf
 ExecStart=/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
